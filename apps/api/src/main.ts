@@ -8,9 +8,11 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
+  logger.log('Creating Nest application');
   const app = await NestFactory.create(AppModule, { cors: true });
   const port = Number(process.env.PORT ?? process.env.API_PORT ?? 4000);
   const httpAdapter = app.getHttpAdapter().getInstance();
+  logger.log('Nest application created');
 
   app.use(helmet());
   app.use(cookieParser());
@@ -34,8 +36,10 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
+  logger.log('Generating Swagger document');
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup(process.env.SWAGGER_PATH ?? 'docs', app, document);
+  logger.log('Swagger routes mounted');
 
   httpAdapter.get('/', (_request: unknown, response: { status: (code: number) => { json: (body: unknown) => void } }) => {
     response.status(200).json({
@@ -53,8 +57,11 @@ async function bootstrap() {
     });
   });
 
+  logger.log('Healthcheck routes mounted');
   ensureUploadDir();
+  logger.log('Upload directory ready');
 
+  logger.log(`Starting HTTP listener on port ${port}`);
   await app.listen(port, '0.0.0.0');
   logger.log(`API listening on 0.0.0.0:${port}`);
 }
