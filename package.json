@@ -1,0 +1,23 @@
+{
+  "name": "sse-academic-collaboration-platform",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm run dev -w @sse/api\" \"npm run dev -w @sse/web\"",
+    "build": "npm run build -w @sse/api && npm run build -w @sse/web",
+    "lint": "npm run lint -w @sse/api && npm run lint -w @sse/web",
+    "test": "npm run test -w @sse/api && npm run test -w @sse/web",
+    "test:unit": "npm run test:unit -w @sse/api && npm run test:unit -w @sse/web",
+    "test:integration": "npm run test:integration -w @sse/api",
+    "test:e2e": "npm run test:e2e -w @sse/web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
