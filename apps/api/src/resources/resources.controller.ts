@@ -14,6 +14,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuid } from 'uuid';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { ensureUploadDir } from 'src/common/utils/upload-path';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { AuthUser } from 'src/auth/auth.types';
 import { CreateResourceDto } from './dto/create-resource.dto';
@@ -36,7 +37,9 @@ export class ResourcesController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: 'apps/api/uploads',
+        destination: (_request, _file, callback) => {
+          callback(null, ensureUploadDir());
+        },
         filename: (_request, file, callback) => {
           callback(null, `${uuid()}${extname(file.originalname)}`);
         }

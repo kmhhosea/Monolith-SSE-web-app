@@ -3,9 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { join } from 'path';
 import appConfig from './config/app.config';
 import { AuthModule } from './auth/auth.module';
+import { resolveUploadDir } from './common/utils/upload-path';
 import { DatabaseModule } from './database/database.module';
 import { RedisModule } from './database/redis.module';
 import { FeedModule } from './feed/feed.module';
@@ -35,7 +35,7 @@ import { UsersModule } from './users/users.module';
       }
     ]),
     ServeStaticModule.forRoot({
-      rootPath: join(process.cwd(), 'apps/api/uploads'),
+      rootPath: resolveUploadDir(),
       serveRoot: '/uploads'
     }),
     DatabaseModule,
