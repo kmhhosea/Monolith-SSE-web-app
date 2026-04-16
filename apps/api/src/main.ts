@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
@@ -7,6 +7,7 @@ import { ensureUploadDir } from './common/utils/upload-path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule, { cors: true });
   const port = Number(process.env.PORT ?? process.env.API_PORT ?? 4000);
   const httpAdapter = app.getHttpAdapter().getInstance();
@@ -55,6 +56,11 @@ async function bootstrap() {
   ensureUploadDir();
 
   await app.listen(port, '0.0.0.0');
+  logger.log(`API listening on 0.0.0.0:${port}`);
 }
 
-void bootstrap();
+void bootstrap().catch((error: unknown) => {
+  const logger = new Logger('Bootstrap');
+  logger.error('API failed to start', error instanceof Error ? error.stack : String(error));
+  process.exit(1);
+});
