@@ -12,6 +12,7 @@ You must provide these for any real deployment:
 - `JWT_REFRESH_SECRET`: different long random secret for refresh tokens.
 - `COOKIE_SECRET`: long random secret for signed cookies and session-related protection.
 - `WEB_URL`: public frontend URL, for example `https://app.yourdomain.com`.
+- `CORS_ORIGINS`: comma-separated allowed frontend origins, for example `https://app.yourdomain.com,https://www.app.yourdomain.com`.
 - `NEXT_PUBLIC_API_URL`: public API URL, for example `https://api.yourdomain.com/api/v1` or the same-domain API path.
 
 ## Optional But Important Credentials

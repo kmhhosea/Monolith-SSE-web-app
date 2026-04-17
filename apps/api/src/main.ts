@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { isAllowedOrigin } from './common/utils/cors';
 import { ensureUploadDir } from './common/utils/upload-path';
 import { AppModule } from './app.module';
 
@@ -17,7 +18,14 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   app.enableCors({
-    origin: process.env.WEB_URL ?? 'http://localhost:3000',
+    origin: (origin, callback) => {
+      if (isAllowedOrigin(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`Origin ${origin ?? 'unknown'} is not allowed by CORS.`));
+    },
     credentials: true
   });
   app.setGlobalPrefix('api/v1');
